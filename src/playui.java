@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.SystemColor;
@@ -11,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -22,6 +24,7 @@ import java.sql.Statement;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -72,7 +75,7 @@ public class playui extends JFrame implements MouseListener {
 		setTitle("Feliz Arcade");
 		setBackground(Color.LIGHT_GRAY);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1005, 800);
+		setBounds(100, 100, 1000, 800);
 		setLocationRelativeTo(null);
 
 		contentPane = new JPanel();
@@ -114,7 +117,7 @@ public class playui extends JFrame implements MouseListener {
 			}
 		});
 		btnLeaderBoard.setFont(new Font("JetBrains Mono", Font.PLAIN, 16));
-		btnLeaderBoard.setBounds(411, 715, 167, 35);
+		btnLeaderBoard.setBounds(383, 704, 167, 35);
 		contentPane.add(btnLeaderBoard);
 
 		JLabel lblNewLabel_1 = new JLabel("Image Type");
@@ -155,7 +158,7 @@ public class playui extends JFrame implements MouseListener {
 
 		imgPanel = new JPanel();
 		imgPanel.setBackground(Color.LIGHT_GRAY);
-		imgPanel.setBounds(41, 124, 908, 586);
+		imgPanel.setBounds(38, 119, 908, 586);
 		contentPane.add(imgPanel);
 		imgPanel.setLayout(new GridLayout(2,3,5,5));
 		
@@ -345,15 +348,39 @@ public class playui extends JFrame implements MouseListener {
 
 	}
 
+	Icon temp;
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		this.setBackground(Color.gray);
+		JLabel label = (JLabel) e.getSource();
+		temp = label.getIcon();
+		ImageIcon getIcon = (ImageIcon) label.getIcon();
+		Image image = getIcon.getImage();
+        int width = image.getWidth(null);
+        int height = image.getHeight(null);
+
+        // Create a BufferedImage from the image
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = bufferedImage.getGraphics();
+        g.drawImage(image, 0, 0, null);
+
+        // Apply a blur effect using RescaleOp
+        float[] scales = {0.5f, 0.5f, 0.5f, 2f};
+        float[] offsets = new float[4];
+        RescaleOp rescaleOp = new RescaleOp(scales, offsets, null);
+        bufferedImage = rescaleOp.filter(bufferedImage, null);
+
+        // Create a new ImageIcon with the blurred image
+        ImageIcon blurredIcon = new ImageIcon(bufferedImage);
+
+        // Set the JLabel's icon to the blurred image
+        label.setIcon(blurredIcon);
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		this.setBackground(Color.LIGHT_GRAY);
+		JLabel label = (JLabel) e.getSource();
+		label.setIcon(temp);
 	}
 }

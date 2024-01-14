@@ -23,7 +23,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,7 +89,7 @@ public class game extends JFrame implements ActionListener, MouseListener {
 		setTitle("Puzzle Sliding Game");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 947, 698);
+		setBounds(100, 100, 960, 700);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.LIGHT_GRAY);
@@ -101,12 +104,12 @@ public class game extends JFrame implements ActionListener, MouseListener {
 		contentPane.add(mainPanel);
 
 		lblShowImage = new JLabel("");
-		lblShowImage.setBounds(620, 52, 300, 300);
+		lblShowImage.setBounds(634, 52, 300, 300);
 		contentPane.add(lblShowImage);
 
 		functionPanel = new JPanel();
 		functionPanel.setBackground(Color.GRAY);
-		functionPanel.setBounds(620, 363, 289, 289);
+		functionPanel.setBounds(634, 363, 289, 289);
 		contentPane.add(functionPanel);
 		functionPanel.setLayout(null);
 
@@ -350,9 +353,6 @@ public class game extends JFrame implements ActionListener, MouseListener {
 	}
 	private void shuffleImage() {
 		Collections.shuffle(imgList);
-		for(int i = 0; i < imgList.size(); i++) {
-			System.out.println("Index : " + imgList.indexOf(imgList));
-		}
 		refreshPanel(mainPanel);
 	}
 
@@ -466,15 +466,16 @@ public class game extends JFrame implements ActionListener, MouseListener {
 				JTextField uName = new JTextField();
 				Object[] nameTF = { "Username: ", uName, };
 				JOptionPane.showMessageDialog(null, nameTF, "MessageBox", JOptionPane.NO_OPTION,getIcon);
-
 				//this condition doesn't work
-				if(uName.getText().equals(null)) {
+				if(uName.getText().trim().isEmpty()) {
 					JOptionPane.showMessageDialog(null, "Please enter your name!","Notify",JOptionPane.NO_OPTION,getIcon);
+					checkVictory();
 					return;
 				}
 				else {
-					System.out.println("Your name is " + uName.getText() + ". Your score is " + lblTimer.getText());
 					try {
+						JOptionPane.showMessageDialog(null, "Success! You can watch your record at LeaderBoard.","Notify",JOptionPane.NO_OPTION,getIcon);
+						JOptionPane.showMessageDialog(null, "You can restart this game with choose or rechoose difficulty or \n if you want to play with another image you can click the back button to go back to the home page.","Notify Box",JOptionPane.NO_OPTION,getIcon);
 						Class.forName("com.mysql.cj.jdbc.Driver");
 						Connection cn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "root");
 						
