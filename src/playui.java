@@ -46,7 +46,6 @@ public class playui extends JFrame implements MouseListener {
 	private PreparedStatement getData;
 	private JLabel[] labelArr = new JLabel[5];
 	private JPanel imgPanel;
-	private int loadIndex = 0;
 	private getData data = new getData();
 	private String type;
 
@@ -122,7 +121,7 @@ public class playui extends JFrame implements MouseListener {
 
 		JLabel lblNewLabel_1 = new JLabel("Image Type");
 		lblNewLabel_1.setFont(new Font("JetBrains Mono", Font.PLAIN, 14));
-		lblNewLabel_1.setBounds(41, 94, 85, 14);
+		lblNewLabel_1.setBounds(51, 93, 85, 14);
 		contentPane.add(lblNewLabel_1);
 
 		// make image change according to the index
@@ -151,37 +150,37 @@ public class playui extends JFrame implements MouseListener {
 
 		cbImgType.setModel(new DefaultComboBoxModel(new String[] { "Anime", "Cartoon", "Plant" }));
 		// make startup with index 0
-		getData data = new getData();
 		cbImgType.setSelectedIndex(data.getLoadIndex());
-		cbImgType.setBounds(136, 91, 121, 22);
+		cbImgType.setBounds(146, 90, 121, 22);
 		contentPane.add(cbImgType);
 
 		imgPanel = new JPanel();
 		imgPanel.setBackground(Color.LIGHT_GRAY);
-		imgPanel.setBounds(38, 119, 908, 586);
+		imgPanel.setBounds(51, 119, 908, 586);
 		contentPane.add(imgPanel);
-		imgPanel.setLayout(new GridLayout(2,3,5,5));
-		
-		for(int i = 0; i < labelArr.length; i++) {
+		imgPanel.setLayout(new GridLayout(2, 3, 5, 5));
+
+		for (int i = 0; i < labelArr.length; i++) {
 			imgPanel.add(labelArr[i]);
 		}
-		
+
 		img6 = new JLabel("");
-		img6.setHorizontalAlignment(SwingConstants.CENTER);
+		img6.setHorizontalAlignment(SwingConstants.LEADING);
 		img6.setBounds(627, 306, 250, 250);
+		img6.setIcon(new ImageIcon("image/fileclose.png"));
 		img6.setBackground(Color.LIGHT_GRAY);
 		img6.setOpaque(true);
 		imgPanel.add(img6);
 		img6.addMouseListener(new MouseAdapter() {
-
+			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				img6.setBackground(Color.DARK_GRAY);
+				img6.setIcon(new ImageIcon("image/fileopen.png"));
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				img6.setBackground(Color.LIGHT_GRAY);
+				img6.setIcon(new ImageIcon("image/fileclose.png"));
 			}
 
 			@Override
@@ -212,12 +211,6 @@ public class playui extends JFrame implements MouseListener {
 				img6.setBackground(Color.LIGHT_GRAY);
 			}
 		});
-
-		ImageIcon backgroundimg6 = new ImageIcon("image/addImage.png");
-		Image logoclose6 = backgroundimg6.getImage();
-		Image scaleclose6 = logoclose6.getScaledInstance(img6.getWidth(), img6.getHeight(), Image.SCALE_SMOOTH);
-		ImageIcon scaledclose6 = new ImageIcon(scaleclose6);
-		img6.setIcon(scaledclose6);
 	}
 
 	private Connection getConnection() {
@@ -232,17 +225,17 @@ public class playui extends JFrame implements MouseListener {
 	}
 
 	public void LoadImg(String getType) {
-		try {			
+		try {
 			cn = getConnection();
 			st = cn.createStatement();
 			st.execute("use puzzleslide");
-			getData = cn.prepareStatement("select * from "+getType+"");
+			getData = cn.prepareStatement("select * from " + getType + "");
 
 			ResultSet getPath = getData.executeQuery();
 			int index = 0;
 			while (getPath.next()) {
 				String tempPath = getPath.getString("path");
-				
+
 				ImageIcon getImageIcon = new ImageIcon(tempPath);
 				Image getImg = getImageIcon.getImage();
 				Image scaleImg = getImg.getScaledInstance(250, 250, Image.SCALE_SMOOTH);
@@ -254,13 +247,16 @@ public class playui extends JFrame implements MouseListener {
 				labelArr[index] = temp;
 				index++;
 			}
-			if(imgPanel != null) {
-				imgPanel.removeAll(); imgPanel.repaint(); imgPanel.revalidate();
-				for(int i = 0; i < labelArr.length; i++) {
+			if(imgPanel!=null) {
+				imgPanel.removeAll();
+				imgPanel.repaint();
+				imgPanel.revalidate();
+				for (int i = 0; i < labelArr.length; i++) {
 					imgPanel.add(labelArr[i]);
 				}
-				imgPanel.add(img6);
+				imgPanel.add(img6);				
 			}
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -278,7 +274,7 @@ public class playui extends JFrame implements MouseListener {
 			e1.printStackTrace();
 		}
 		data.setImg(img);
-		//pass the data to game form
+		// pass the data to game form
 		game game = new game();
 		game.setString(type);
 		game.setVisible(true);
@@ -286,6 +282,7 @@ public class playui extends JFrame implements MouseListener {
 	}
 
 	String tableName;
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		try {
@@ -309,8 +306,8 @@ public class playui extends JFrame implements MouseListener {
 				tableName = "plant";
 				break;
 			}
-			
-			getData = cn.prepareStatement("select * from "+tableName+" where name = ?");
+
+			getData = cn.prepareStatement("select * from " + tableName + " where name = ?");
 
 			String tempPath;
 
@@ -326,9 +323,9 @@ public class playui extends JFrame implements MouseListener {
 				getData.setString(1, "img5");
 			}
 			ResultSet rst = getData.executeQuery();
-			if(rst.next()) {
+			if (rst.next()) {
 				tempPath = rst.getString("path");
-				setFile(tempPath);				
+				setFile(tempPath);
 			}
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
@@ -349,6 +346,7 @@ public class playui extends JFrame implements MouseListener {
 	}
 
 	Icon temp;
+
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -356,25 +354,25 @@ public class playui extends JFrame implements MouseListener {
 		temp = label.getIcon();
 		ImageIcon getIcon = (ImageIcon) label.getIcon();
 		Image image = getIcon.getImage();
-        int width = image.getWidth(null);
-        int height = image.getHeight(null);
+		int width = image.getWidth(null);
+		int height = image.getHeight(null);
 
-        // Create a BufferedImage from the image
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = bufferedImage.getGraphics();
-        g.drawImage(image, 0, 0, null);
+		// Create a BufferedImage from the image
+		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics g = bufferedImage.getGraphics();
+		g.drawImage(image, 0, 0, null);
 
-        // Apply a blur effect using RescaleOp
-        float[] scales = {0.5f, 0.5f, 0.5f, 2f};
-        float[] offsets = new float[4];
-        RescaleOp rescaleOp = new RescaleOp(scales, offsets, null);
-        bufferedImage = rescaleOp.filter(bufferedImage, null);
+		// Apply a blur effect using RescaleOp
+		float[] scales = { 0.5f, 0.5f, 0.5f, 2f };
+		float[] offsets = new float[4];
+		RescaleOp rescaleOp = new RescaleOp(scales, offsets, null);
+		bufferedImage = rescaleOp.filter(bufferedImage, null);
 
-        // Create a new ImageIcon with the blurred image
-        ImageIcon blurredIcon = new ImageIcon(bufferedImage);
+		// Create a new ImageIcon with the blurred image
+		ImageIcon blurredIcon = new ImageIcon(bufferedImage);
 
-        // Set the JLabel's icon to the blurred image
-        label.setIcon(blurredIcon);
+		// Set the JLabel's icon to the blurred image
+		label.setIcon(blurredIcon);
 	}
 
 	@Override
